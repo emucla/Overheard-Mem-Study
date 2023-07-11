@@ -48,7 +48,7 @@ analyze <- function(codes_csv) {
             cur_duration <- cur_duration + cur_time
             # counts number of each label
             switch(
-                data$Attention.t.d.n[cur_index],
+                data$Attention.t.d.n.p[cur_index],
                 "t" = t_dur <- t_dur + cur_time,
                 "d" = d_dur <- d_dur + cur_time,
                 "n" = n_dur <- n_dur + cur_time,
@@ -79,8 +79,8 @@ analyze <- function(codes_csv) {
 }
 
 # !!! change coder1 and coder2 csv names
-coder1 <- analyze("22_SW.csv")
-coder2 <- analyze("22_RS.csv")
+coder1 <- analyze("03_SW.csv")
+coder2 <- analyze("03_RS.csv")
 
 min <- min(coder1$n[1], coder2$n[1])
 max <- max(coder1$n[1], coder2$n[1])
@@ -113,11 +113,11 @@ if (coder1$n[1] == min) {
 }
 print(icc(rel, model = "twoway", type = "agreement", unit = "single"))
 
-# run from handmade csv file to test compare script (TODO NEED TO UPDATE)
-reldot <- read.csv("SUB_22_REL.csv", header = TRUE)
-newrel <- subset(reldot, select = c("coder1", "coder2"))
-print(icc(newrel, model = "twoway", type = "agreement", unit = "single"))
+# # run from handmade csv file to test compare script (TODO NEED TO UPDATE)
+# reldot <- read.csv("SUB_22_REL.csv", header = TRUE)
+# newrel <- subset(reldot, select = c("coder1", "coder2"))
+# print(icc(newrel, model = "twoway", type = "agreement", unit = "single"))
 
 # write rel to a csv file
 #!!! update name of csv to something new
-write.csv(rel, "22_REL.csv", row.names = FALSE)
+write.csv(rel, "03_REL.csv", row.names = FALSE)
