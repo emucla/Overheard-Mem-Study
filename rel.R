@@ -41,7 +41,7 @@ analyze <- function(codes_csv) {
     t_dur <- d_dur <- n_dur <- p_dur <- 0 # store duration of "n" label
 
     # loop through blocks (either trial or ISI)
-    while (!is.na(data$Trial.trialnum[cur_index_trial])) {
+    while (!(is.na(data$Trial.trialnum[cur_index_trial]) || data$Trial.trialnum[cur_index_trial] == "")) { # nolint
         # skips ISI
         if (data$Trial.trialnum[cur_index_trial] == "ISI") {
             cur_index_trial <- cur_index_trial + 1
@@ -63,7 +63,7 @@ analyze <- function(codes_csv) {
                 cur_trial <- cur_trial + 1
             }
             # loop through individual datapoints up to end of current trial
-            while (!is.na(data$Attention.offset[cur_index_attention]) && data$Attention.offset[cur_index_attention] <= data$Trial.offset[cur_index_trial]){ # nolint
+            while (!(is.na(data$Attention.offset[cur_index_attention]) || data$Attention.offset[cur_index_attention] == "") && data$Attention.offset[cur_index_attention] <= data$Trial.offset[cur_index_trial]){ # nolint
                 # find time of current labeling event
                 cur_time <- (data$Attention.offset[cur_index_attention] - data$Attention.onset[cur_index_attention]) / 1000 # nolint
                 # add length of labeling event to duration
@@ -81,6 +81,7 @@ analyze <- function(codes_csv) {
             }
             # adds time of block to current trial time
             trial_time <- trial_time + ((data$Trial.offset[cur_index_trial] - data$Trial.onset[cur_index_trial]) / 1000) # nolint
+            print(trial_time)
             # advances to next block
             cur_index_trial <- cur_index_trial + 1
         }
@@ -98,12 +99,13 @@ analyze <- function(codes_csv) {
         raw = c(durations, targets, neutrals, distractors, persons, times),
         analysis = c(round(durations, 0), round(targets, 2), round(neutrals, 2), round(distractors, 2), round(persons, 2), round(times, 0)) # nolint
     )
+    print(res)
     return(res)
 }
 
 # !!! change coder1 and coder2 csv names
-coder1 <- analyze("4_SW.csv")
-coder2 <- analyze("04_RS.csv")
+coder1 <- analyze("25_SW.csv")
+coder2 <- analyze("25_RS.csv")
 
 # sizes dataframes for reliability
 min <- min(coder1$n[1], coder2$n[1])
@@ -145,4 +147,4 @@ print(icc(rel, model = "twoway", type = "agreement", unit = "single"))
 
 # write rel to a csv file
 # !!! update name of csv to something new
-write.csv(rel, "04_REL.csv", row.names = FALSE)
+write.csv(rel, "25_REL.csv", row.names = FALSE)
