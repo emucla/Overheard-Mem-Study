@@ -14,12 +14,6 @@ library(arsenal)
 library(tidyr)
 
 # analyze function - analyzes individual csv file (TODO - write xls files)
-#
-# VARIABLES:
-# duration -> length of labeling events in trial
-# trial_time -> length of trial
-# "x"-dur -> duration of "x" label within a trial
-#
 # RETURN:
 # dataframe containing three columns:
 # raw = raw data
@@ -81,7 +75,6 @@ analyze <- function(codes_csv) {
             }
             # adds time of block to current trial time
             trial_time <- trial_time + ((data$Trial.offset[cur_index_trial] - data$Trial.onset[cur_index_trial]) / 1000) # nolint
-            print(trial_time)
             # advances to next block
             cur_index_trial <- cur_index_trial + 1
         }
@@ -99,13 +92,12 @@ analyze <- function(codes_csv) {
         raw = c(durations, targets, neutrals, distractors, persons, times),
         analysis = c(round(durations, 0), round(targets, 2), round(neutrals, 2), round(distractors, 2), round(persons, 2), round(times, 0)) # nolint
     )
-    print(res)
     return(res)
 }
 
 # !!! change coder1 and coder2 csv names
-coder1 <- analyze("25_SW.csv")
-coder2 <- analyze("25_RS.csv")
+coder1 <- analyze("05_SW.csv")
+coder2 <- analyze("05_RS.csv")
 
 # sizes dataframes for reliability
 min <- min(coder1$n[1], coder2$n[1])
@@ -140,11 +132,6 @@ if (coder1$n[1] == min) {
 # runs intraclass correlation
 print(icc(rel, model = "twoway", type = "agreement", unit = "single"))
 
-# # run from handmade csv file to test compare script (TODO NEED TO UPDATE)
-# reldot <- read.csv("SUB_22_REL.csv", header = TRUE)
-# newrel <- subset(reldot, select = c("coder1", "coder2"))
-# print(icc(newrel, model = "twoway", type = "agreement", unit = "single"))
-
 # write rel to a csv file
 # !!! update name of csv to something new
-write.csv(rel, "25_REL.csv", row.names = FALSE)
+write.csv(rel, "05_REL.csv", row.names = FALSE)
