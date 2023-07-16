@@ -29,9 +29,7 @@ format <- function(codes_csv) {
     # reads csv into dataframe
     data <- data.frame(read.csv(codes_csv))
 
-    print(deparse(substitute(codes_csv)))
-    sub_id <- substr(deparse(substitute(codes_csv)), 2, 3) %>% strtoi()
-    print(sub_id)
+    sub_id <- substr(codes_csv, 1, 2) %>% strtoi()
 
     # intializes vectors
     trial_nums <- durations <- times <- targets <- neutrals <- distractors <- persons <- c() # nolint
@@ -114,22 +112,20 @@ format <- function(codes_csv) {
         cond = cond,
         trial_time = times
     )
-    # print(res)
     return(res)
 }
 
-data <- c("05_SW.csv", "16_SW.csv")
-# c("02_SW.csv", "03_SW.csv", "04_SW.csv", "05_SW.csv",
-#     "06_SW.csv", "07_SW.csv", "08_SW.csv", "09_SW.csv", "12_SW.csv",
-#     "13_SW.csv", "14_SW.csv", "16_SW.csv", "19_SW.csv", "22_SW.csv",
-#     "23_SW.csv", "24_SW.csv", "25_SW.csv", "28_SW.csv", "29_SW.csv",
-#     "30_SW.csv", "31_SW.csv", "32_SW.csv", "33_SW.csv", "34_SW.csv",
-#     "37_SW.csv", "38_SW.csv")
+data <- c("02_SW.csv", "03_SW.csv", "04_SW.csv", "05_SW.csv",
+    "06_SW.csv", "07_SW.csv", "08_SW.csv", "09_SW.csv", "12_SW.csv",
+    "13_SW.csv", "14_SW.csv", "16_SW.csv", "19_SW.csv", "22_SW.csv",
+    "23_SW.csv", "24_SW.csv", "25_SW.csv", "28_SW.csv", "29_SW.csv",
+    "30_SW.csv", "31_SW.csv", "32_SW.csv", "33_SW.csv", "34_SW.csv",
+    "37_SW.csv", "38_SW.csv")
 
-final <- format("04_SW.csv")
+final <- data.frame()
 
 for (csv in data) {
     final <- rbind(final, format(csv))
 }
 
-# print(final)
+write.csv(final, "video_coding_data.csv", row.names = FALSE)
