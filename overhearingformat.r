@@ -29,13 +29,14 @@ format <- function(codes_csv) {
     # reads csv into dataframe
     data <- data.frame(read.csv(codes_csv))
 
-    sub_id <- substr(codes_csv, 1, 2) %>% strtoi()
+    # determines sub_id based on file name
+    sub_id <- substr(codes_csv, 1, 2) %>% strtoi(base = 10L)
 
     # intializes vectors
     trial_nums <- durations <- times <- targets <- neutrals <- distractors <- persons <- c() # nolint
 
     # intializes indices for looping through data & storing values
-    cond <- "massed"
+    cond <- "massed" #stores condition (massed or spaced)
     cur_trial <- 1 # stores trial number
     cur_index_trial <- 1 # stores index of trial event
     cur_index_attention <- 1 # stores index of attention event
@@ -47,6 +48,7 @@ format <- function(codes_csv) {
     while (!(is.na(data$Trial.trialnum[cur_index_trial]) || data$Trial.trialnum[cur_index_trial] == "")) { # nolint
         # skips ISI
         if (data$Trial.trialnum[cur_index_trial] == "ISI") {
+            # ISI's exist, so trial must be spaced
             cond <- "spaced"
             cur_index_trial <- cur_index_trial + 1
         } else {
@@ -98,7 +100,7 @@ format <- function(codes_csv) {
     distractors <- c(distractors, d_dur)
     persons <- c(persons, p_dur)
     trial_nums <- c(trial_nums, cur_trial)
-    # preps dataframe for return, rounds off numbers for analysis
+    # preps dataframe for return, rounds off numbers for formating
     res <- data.frame(
         sub_id = sub_id,
         trial = trial_nums,
@@ -115,17 +117,20 @@ format <- function(codes_csv) {
     return(res)
 }
 
+#list containing names of all the files to be formatted
 data <- c("02_SW.csv", "03_SW.csv", "04_SW.csv", "05_SW.csv",
     "06_SW.csv", "07_SW.csv", "08_SW.csv", "09_SW.csv", "12_SW.csv",
     "13_SW.csv", "14_SW.csv", "16_SW.csv", "19_SW.csv", "22_SW.csv",
     "23_SW.csv", "24_SW.csv", "25_SW.csv", "28_SW.csv", "29_SW.csv",
     "30_SW.csv", "31_SW.csv", "32_SW.csv", "33_SW.csv", "34_SW.csv",
     "37_SW.csv", "38_SW.csv")
+final <- data.frame() # data frame for storing the formatted frames for each csv
 
-final <- data.frame()
-
+# formats every csv in data, adds it to final
 for (csv in data) {
     final <- rbind(final, format(csv))
 }
 
+# write final to a csv as output
+# !!! TODO change name of output file
 write.csv(final, "video_coding_data.csv", row.names = FALSE)
