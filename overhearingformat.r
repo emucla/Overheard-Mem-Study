@@ -123,7 +123,7 @@ data <- c("02_SW.csv", "03_SW.csv", "04_SW.csv", "05_SW.csv",
     "13_SW.csv", "14_SW.csv", "16_SW.csv", "19_SW.csv", "22_SW.csv",
     "23_SW.csv", "24_SW.csv", "25_SW.csv", "28_SW.csv", "29_SW.csv",
     "30_SW.csv", "31_SW.csv", "32_SW.csv", "33_SW.csv", "34_SW.csv",
-    "37_SW.csv", "38_SW.csv")
+    "36_SW.csv", "37_SW.csv", "38_SW.csv")
 final <- data.frame() # data frame for storing the formatted frames for each csv
 
 # formats every csv in data, adds it to final
