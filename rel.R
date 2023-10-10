@@ -1,7 +1,6 @@
 # !!! TODO BEFORE RUNNING !!! (look for "!!!")
 # ! update path of file
-# ! update coder1 & coder2 with csv file names
-# ! change name of output file
+# ! update coder initals and subject ID
 
 # !!! change path of file
 setwd("C:/Users/shaop/Downloads")
@@ -12,6 +11,11 @@ library(irr)
 library(compare)
 library(arsenal)
 library(tidyr)
+
+# !!! change ID + intials
+sub_id <- 22
+c1_initials <- "SW"
+c2_initials <- "RS"
 
 # analyze function - analyzes individual csv file (TODO - write xls files)
 # RETURN:
@@ -57,7 +61,7 @@ analyze <- function(codes_csv) {
                 cur_trial <- cur_trial + 1
             }
             # loop through individual datapoints up to end of current trial
-            while (!(is.na(data$Attention.offset[cur_index_attention]) || data$Attention.offset[cur_index_attention] == "") && data$Attention.offset[cur_index_attention] <= data$Trial.offset[cur_index_trial]){ # nolint
+            while (!is.na(data$Attention.offset[cur_index_attention]) && data$Attention.offset[cur_index_attention] <= data$Trial.offset[cur_index_trial]){ # nolint
                 # find time of current labeling event
                 cur_time <- (data$Attention.offset[cur_index_attention] - data$Attention.onset[cur_index_attention]) / 1000 # nolint
                 # add length of labeling event to duration
@@ -95,9 +99,9 @@ analyze <- function(codes_csv) {
     return(res)
 }
 
-# !!! change coder1 and coder2 csv names
-coder1 <- analyze("05_SW.csv")
-coder2 <- analyze("05_RS.csv")
+# runs analyze for both codesheets
+coder1 <- analyze(sprintf("% s_% s.csv", sub_id, c1_initials))
+coder2 <- analyze(sprintf("% s_% s.csv", sub_id, c2_initials))
 
 # sizes dataframes for reliability
 min <- min(coder1$n[1], coder2$n[1])
@@ -133,5 +137,4 @@ if (coder1$n[1] == min) {
 print(icc(rel, model = "twoway", type = "agreement", unit = "single"))
 
 # write rel to a csv file
-# !!! update name of csv to something new
-write.csv(rel, "05_REL.csv", row.names = FALSE)
+write.csv(rel, sprintf("% s_REL.csv", sub_id), row.names = FALSE)
